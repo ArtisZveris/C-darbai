@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1524586925 source:c:\users\arturas\desktop\c darbai\c-darbai\namudarbai\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
