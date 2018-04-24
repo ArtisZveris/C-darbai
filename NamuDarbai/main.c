@@ -23,7 +23,7 @@ void spausdinti4(MedisPtr);
 
 int main()
 {
-    Uzduotis_3();
+    Uzduotis_2();
     return 0;
 }
 
@@ -102,6 +102,8 @@ void Uzduotis_2() {
 void Uzduotis_3() {
     int i, reiksme;
     MedisPtr saknis = NULL;
+    printf("Sukurti dvejetaini medi, realizuojant elemento iterpimo, pasalinimo, spausdinimo bei paieskos funkcijas.\n");
+    printf("Perkelti to saraso visus elementus i dvikrypti ciklini sarasa. \nAtspausdinti visus dvikrypcio ciklinio saraso elementus.\n\n");
     printf("Iveskite 6 reiksmiu i medi\n");
     for (i=0; i<=5; i++) {
         scanf("%d", &reiksme);
