@@ -12,6 +12,14 @@ struct medis {
 typedef struct medis Medis;
 typedef Medis *MedisPtr;
 
+struct dvikrypt {
+    int duom;
+    struct dvikrypt *desine;
+    struct dvikrypt *kaire;
+};
+
+typedef struct dvikrypt sarasas;
+
 void meniu();
 void Uzduotis_1 ();
 void Uzduotis_2 ();
@@ -20,11 +28,13 @@ void Uzduotis_4 ();
 void iterpti (MedisPtr *, int);
 void spausdinti(MedisPtr);
 bool paieska(MedisPtr, int);
+MedisPtr salinti(Medis *, int);
+void dvikrypsarasas(int);
 
 int main()
 {
 	meniu();
-	system("pause");
+//	system("pause");
     return 0;
 }
 
@@ -66,7 +76,7 @@ void Uzduotis_1() {
     int skaicius = 0;
 
     printf("UZDUOTIS 1\n");
-    printf("\nDuotas tipinis failas, kurio komponentai simboliai. Rasti kiek zodziu prasideda raide a.\n\n"); //UË›duotis
+    printf("\nDuotas tipinis failas, kurio komponentai simboliai. Rasti kiek zodziu prasideda raide a.\n\n"); //Užduotis
 
     if ((failas = fopen("failas.dat", "wb+")) == NULL){
         printf("Klaida atidarant faila!\n");
@@ -153,52 +163,73 @@ void Uzduotis_2() {
 }
 
 void Uzduotis_3() {
-    int i, reiksme;
+    int i, reiksme, kiekis;
     MedisPtr saknis = NULL;
-	
+
 	system("cls");
     printf("Uzduotis 3\n\n");
-    printf("Sukurti dvejetaini medi, realizuojant elemento iterpimo, pasalinimo, \nspausdinimo bei paieskos funkcijas.");
-    printf("Perkelti to saraso visus elementus i dvikrypti ciklini sarasa. \nAtspausdinti visus dvikrypcio ciklinio saraso elementus.\n\n");
+    printf("Sukurti dvejetaini medi, realizuojant elemento iterpimo, pasalinimo, \n");
+    printf("spausdinimo bei paieskos funkcijas.");
+    printf("Perkelti to saraso visus elementus i dvikrypti ciklini sarasa.\n");
+    printf("Atspausdinti visus dvikrypcio ciklinio saraso elementus.\n\n");
     //Meniu
-	printf("[1] - Iterpti\n");
-	printf("[2] - Pasalinti\n");
-	printf("[3] - Spauzdinti\n");
-	printf("[4] - Ieskoti\n");
-	printf("[5] - Perkelti visus elementus i dvikrypti ciklini sarasa ir atspauzdinti\n");
-	printf("[0] - Gryzti atghal\n");
-	scanf("%d", &i);
+    while (!0) {
+        printf("[1] - Iterpti\n");
+        printf("[2] - Pasalinti\n");
+        printf("[3] - Spausdinti\n");
+        printf("[4] - Ieskoti\n");
+        printf("[5] - Perkelti visus elementus i dvikrypti ciklini sarasa ir atspausdinti\n");
+        printf("[0] - Gryzti atghal\n");
+        scanf("%d", &i);
+        printf("\n");
+        switch (i) {
+            case 0:
+                meniu();
+                exit(0);
+                break;
+            case 1:
+                printf("Kiek bus ivedama reiksmiu?\n");
+                printf("?");
+                scanf("%d", &kiekis);
+                for (i=0; i<kiekis; i++) {
+                    printf("Reiksme: ");
+                    scanf("%d", &reiksme);
+                    iterpti(&saknis, reiksme);
+                }
+                printf("\n");
+                break;
+            case 2:
+                printf("Kokia reiksme norite pasalinti?\n");
+                printf("Reiksme: ");
+                scanf("%d", &reiksme);
+                if(paieska(saknis, reiksme)) {
+                    printf("Elementas %d sekmingai pasalintas\n", reiksme);
+                } else {
+                    printf("Tokio elemnto nera!\n");
+                }
+                printf("\n");
+                break;
+            case 3:
+                printf("Medis:\n");
+                spausdinti(saknis);
+                printf("\n");
+                break;
+            case 4:
+                printf("Ko ieskoti?\n?");
+                scanf("%d", &reiksme);
+                if(paieska(saknis, reiksme))
+                    printf("Reiksme %d yra musu medyje!\n", reiksme);
+                else
+                    printf("Tokios reiksmes medyje nera!\n");
+                break;
+            case 5:
 
-	switch (i) {
-		case 0:
-			meniu();
-			exit(0);
-			break;
-		case 1:
-			printf("Iveskite 5 reiksmiu i medi\n");
-			for (i=0; i<5; i++) {
-				scanf("%d", &reiksme);
-				printf("Kita: \n");
-				iterpti(&saknis, reiksme);
-			}
-			break;
-		case 2:
-			break;
-		case 3:
-		    printf("\nMedis:\n");
-			spausdinti(saknis);
-			break;
-		case 4:
-			printf("Ko ieskoti?\n?");
-			scanf("%d", &reiksme);
-			paieska(saknis, reiksme);
-			break;
-		case 5:
-			break;
-		default:
-			printf("Neteisingas pasirinkimas!");
-			break;
-	}
+                break;
+            default:
+                printf("Neteisingas pasirinkimas!\n");
+                break;
+        }
+    }
     system("pause");
 	meniu();
 }
@@ -227,14 +258,53 @@ void spausdinti(MedisPtr MusuMedis) {
 }
 
 bool paieska(MedisPtr MusuMedis, int elem) {
-	while(MusuMedis != NULL) {
-		if((MusuMedis)->elementas == elem) {
-			return true;
-		} else if(elem < (MusuMedis)->elementas) {
-			MusuMedis = (MusuMedis)->kaire;
-		} else {
-			MusuMedis = (MusuMedis)->desine;
-		}
+	if(MusuMedis == NULL) {
+        return false;
+	} else if((MusuMedis)->elementas == elem) {
+        return true;
+	} else if(elem < (MusuMedis)->elementas) {
+        return paieska((MusuMedis)->kaire, elem);
+	} else {
+        return paieska((MusuMedis)->desine, elem);
 	}
-	return false;
+}
+
+MedisPtr salinti(Medis *MusuMedis, int elem) {
+    struct medis *p;
+
+    if(!MusuMedis) {
+            return MusuMedis;
+    }
+
+    if(MusuMedis->elementas == elem) {
+        if(MusuMedis->kaire == MusuMedis->desine) {
+            free(MusuMedis);
+            return(p);
+        } else if(MusuMedis->kaire == NULL) {
+            p = MusuMedis->desine;
+            free(MusuMedis);
+            return(p);
+        } else if(MusuMedis->desine == NULL) {
+            p = MusuMedis->kaire;
+            free(MusuMedis);
+            return(p);
+        } else {
+            p = MusuMedis->kaire;
+            while(p->desine != NULL) {
+                p = p->desine;
+            }
+            MusuMedis->elementas = p->elementas;
+            MusuMedis->kaire = salinti(MusuMedis->kaire, p->elementas);
+        }
+    }
+    if(MusuMedis->elementas < elem) {
+        MusuMedis->desine = salinti(MusuMedis->desine, elem);
+    } else {
+        MusuMedis->kaire = salinti(MusuMedis->kaire, elem);
+    }
+    return MusuMedis;
+}
+
+void dvikrypsarasas(int elem) {
+
 }
