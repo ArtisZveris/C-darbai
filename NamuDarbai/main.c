@@ -29,7 +29,7 @@ void iterpti (MedisPtr *, int);
 void spausdinti(MedisPtr);
 bool paieska(MedisPtr, int);
 MedisPtr salinti(Medis *, int);
-void dvikrypsarasas(int);
+void dvikrypsarasas(sarasas);
 
 int main()
 {
@@ -223,7 +223,10 @@ void Uzduotis_3() {
                     printf("Tokios reiksmes medyje nera!\n");
                 break;
             case 5:
-
+                sarasas *NaujasSarasas;
+                NaujasSarasas = (sarasas *)malloc(sizeof(sarasas));
+                NaujasSarasas->desine = NULL;
+                NaujasSarasas->kaire = NULL;
                 break;
             default:
                 printf("Neteisingas pasirinkimas!\n");
@@ -305,6 +308,6 @@ MedisPtr salinti(Medis *MusuMedis, int elem) {
     return MusuMedis;
 }
 
-void dvikrypsarasas(int elem) {
+void dvikrypsarasas(sarasas *current, int elem) {
 
 }
