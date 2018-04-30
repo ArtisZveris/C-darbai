@@ -3,6 +3,11 @@
 #include <string.h>
 #include <stdbool.h>
 
+/*typedef struct med
+{
+  struct med *nrxt;
+}MED,*PMED;*/
+
 struct medis {
     int elementas;
     struct medis *kaire;
@@ -12,13 +17,15 @@ struct medis {
 typedef struct medis Medis;
 typedef Medis *MedisPtr;
 
-struct dvikrypt {
-    int duom;
-    struct dvikrypt *desine;
-    struct dvikrypt *kaire;
+struct node {
+    int data;
+    struct node *next;
+    struct node *prev;
 };
 
-typedef struct dvikrypt sarasas;
+typedef struct node Node;
+typedef Node *NodePtr;
+Node *head = NULL, *tail = NULL;
 
 void meniu();
 void Uzduotis_1 ();
@@ -29,12 +36,11 @@ void iterpti (MedisPtr *, int);
 void spausdinti(MedisPtr);
 bool paieska(MedisPtr, int);
 MedisPtr salinti(Medis *, int);
-void dvikrypsarasas(int);
+void insert_at_tail(int number);
 
 int main()
 {
-	meniu();
-//	system("pause");
+	//meniu();
     return 0;
 }
 
@@ -42,7 +48,7 @@ void meniu() {
 	int i;
 	system("cls");
 	printf("\n=====================\n");
-	printf("  Uzduotys 2018\n");
+	printf("  Uzduotys 5 variantas\n");
 	printf("=====================\n\n");
 	printf("[1] - Uzduotis nr 1\n");
 	printf("[2] - Uzduotis nr 2\n");
@@ -73,7 +79,7 @@ void meniu() {
 void Uzduotis_1() {
     FILE * failas;
     char tekstas[40];
-    int skaicius = 0;
+    int skaicius = 0, i=0, j;
 
     printf("UZDUOTIS 1\n");
     printf("\nDuotas tipinis failas, kurio komponentai simboliai. Rasti kiek zodziu prasideda raide a.\n\n"); //Užduotis
@@ -89,15 +95,16 @@ void Uzduotis_1() {
             fwrite(&tekstas, sizeof(tekstas), 1, failas);
             printf("?");
             scanf("%s", tekstas);
+            i++;
         }
     }
 	rewind(failas);
-	while(!feof(failas)){
+	for(j=0; j<i; j++){
 		fread(&tekstas, sizeof(tekstas), 1, failas);
 		char *zodis = strtok(tekstas, " ,");
-		if(zodis[0] == 'a') skaicius++;
+		if(zodis[0] == 'a')
+            skaicius++;
 		zodis = strtok(NULL, " ,");
-
 	}
     fclose(failas);
 
@@ -179,7 +186,7 @@ void Uzduotis_3() {
         printf("[3] - Spausdinti\n");
         printf("[4] - Ieskoti\n");
         printf("[5] - Perkelti visus elementus i dvikrypti ciklini sarasa ir atspausdinti\n");
-        printf("[0] - Gryzti atghal\n");
+        printf("[0] - Gryzti atgal\n");
         scanf("%d", &i);
         printf("\n");
         switch (i) {
@@ -212,7 +219,7 @@ void Uzduotis_3() {
             case 3:
                 printf("Medis:\n");
                 spausdinti(saknis);
-                printf("\n");
+                printf("\n\n");
                 break;
             case 4:
                 printf("Ko ieskoti?\n?");
@@ -223,7 +230,11 @@ void Uzduotis_3() {
                     printf("Tokios reiksmes medyje nera!\n");
                 break;
             case 5:
+                if(saknis == NULL)
+                    printf("Medis yra tuscias!\n\n");
+                else {
 
+               }
                 break;
             default:
                 printf("Neteisingas pasirinkimas!\n");
@@ -305,6 +316,42 @@ MedisPtr salinti(Medis *MusuMedis, int elem) {
     return MusuMedis;
 }
 
-void dvikrypsarasas(int elem) {
+void insertNode(NodePtr *naujas, int value) {
+    if (*naujas == NULL) {
+        *naujas = (NodePtr)malloc(sizeof(Node));
+        (*naujas)->data = value;
+        (*naujas)->next = (*naujas)->prev = *naujas;
+        return;
+    } else if((*naujas)->next == (*naujas)->prev) {
+        NodePtr temp = (NodePtr)malloc(sizeof(Node));
+        temp->data = value;
+        temp->next = *naujas;
+        temp->prev = *naujas;
+        (*naujas)->next = temp;
+        (*naujas)->prev = temp;
+    } else {
+        NodePtr temp = (NodePtr)malloc(sizeof(Node));
+        temp->data = value;
+        temp->prev = *naujas;
+        temp->next = (*naujas)->next;
+        (*naujas)->next->prev = temp;
+        (*naujas)->next = temp;
+    }
+}
 
+void insert_at_tail(int value) {
+    node *newNode = (node*)malloc(sizeof(node));
+    newNode->data = value;
+    newNode->next = newNode;
+    newNode->prev = newNode;
+    if (head == NULL) {
+        head = newNode;
+        tail = newNode;
+    } else {
+        tail->next = newNode;
+        newNode->next = head;
+        newNode->prev = tail;
+        tail =newNode;
+        head->prev = tail;
+    }
 }
