@@ -17,15 +17,21 @@ struct medis {
 typedef struct medis Medis;
 typedef Medis *MedisPtr;
 
-struct node {
+struct Node {
     int data;
     struct node *next;
     struct node *prev;
 };
+struct Node* head;
+struct Node* tail;
 
-typedef struct node Node;
-typedef Node *NodePtr;
-Node *head = NULL, *tail = NULL;
+struct Node* GetNewNode (int x){
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = x;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+    return newNode;
+}
 
 void meniu();
 void Uzduotis_1 ();
@@ -36,11 +42,14 @@ void iterpti (MedisPtr *, int);
 void spausdinti(MedisPtr);
 bool paieska(MedisPtr, int);
 MedisPtr salinti(Medis *, int);
-void insert_at_tail(int number);
+
+void MedisToNode (MedisPtr);
+void InsertAtTail(int);
+void PrintNode();
 
 int main()
 {
-	//meniu();
+	meniu();
     return 0;
 }
 
@@ -233,7 +242,8 @@ void Uzduotis_3() {
                 if(saknis == NULL)
                     printf("Medis yra tuscias!\n\n");
                 else {
-
+                    MedisToNode(saknis);
+                    PrintNode();
                }
                 break;
             default:
@@ -315,7 +325,7 @@ MedisPtr salinti(Medis *MusuMedis, int elem) {
     }
     return MusuMedis;
 }
-
+/*
 void insertNode(NodePtr *naujas, int value) {
     if (*naujas == NULL) {
         *naujas = (NodePtr)malloc(sizeof(Node));
@@ -354,4 +364,37 @@ void insert_at_tail(int value) {
         tail =newNode;
         head->prev = tail;
     }
+}*/
+
+void InsertAtTail(int x) {
+    struct Node* newNode = GetNewNode(x);
+
+    if(head == NULL) {
+        newNode->data = x;
+        head = newNode;
+        tail = newNode;
+    } else {
+        tail->next = newNode;
+        newNode->next = head;
+        newNode->prev = tail;
+        tail = newNode;
+        head->prev = tail;
+    }
 }
+
+void PrintNode() {
+    if(head == NULL)
+        return;
+    struct Node* temp = head;
+    do {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    } while(temp != head);
+}
+
+void MedisToNode(MedisPtr MusuMedis) {
+    MedisToNode(MusuMedis->kaire);
+    InsertAtTail(MusuMedis->elementas);
+    MedisToNode(MusuMedis->desine);
+}
+
