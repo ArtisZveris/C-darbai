@@ -282,7 +282,9 @@ void Uzduotis_4() {
     scanf("%s", simbolis);
     while(!feof(stdin)) {
         IterptiSarasa(simbolis);
-        SpausdintiSarasa();
+		SpausdintiSarasa();
+		printf("?");
+		scanf("%s", simbolis);
     }
 }
 
@@ -395,24 +397,18 @@ void MedisToNode(MedisPtr MusuMedis) {
 void IterptiSarasa(char* value) {
     struct sarasas* temp = (struct sarasas*)malloc(sizeof(struct sarasas));
     temp->data = *value;
-    temp->next = NULL;
-    if(sarasasPtr == NULL){
-        sarasasPtr = temp;
-    } else {
-        struct sarasas* temp1 = (struct sarasas*)malloc(sizeof(struct sarasas));
-        temp1 = sarasasPtr;
-        while(temp1->next != NULL) {
-            temp1 = temp1->next;
-        }
-        temp1 = temp;
-    }
+    temp->next = sarasasPtr;
+    sarasasPtr = temp;
 }
 
 void SpausdintiSarasa() {
-    struct sarasas* temp = sarasasPtr;
+    int mazosraides = 0;
+	struct sarasas* temp = sarasasPtr;
     printf("Musu sarasas\n");
     while(temp != NULL) {
-        printf("%c", temp->data);
-        temp = temp->next;
+        printf("%c ", temp->data);
+		temp = temp->next;
     }
+	printf("\n");
+	printf("Skirtingu mazuju raidziu yra: %d ", mazosraides);
 }
