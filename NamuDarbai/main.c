@@ -3,11 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-/*typedef struct med
-{
-  struct med *nrxt;
-}MED,*PMED;*/
-
 struct medis {
     int elementas;
     struct medis *kaire;
@@ -33,6 +28,12 @@ struct Node* GetNewNode (int x){
     return newNode;
 }
 
+struct sarasas {
+    char data;
+    struct sarasas *next;
+};
+struct sarasas* sarasasPtr;
+
 void meniu();
 void Uzduotis_1 ();
 void Uzduotis_2 ();
@@ -46,6 +47,9 @@ MedisPtr salinti(Medis *, int);
 void MedisToNode (MedisPtr);
 void InsertAtTail(int);
 void PrintNode();
+//4 Uzduotis
+void IterptiSarasa(char*);
+void SpausdintiSarasa();
 
 int main()
 {
@@ -62,6 +66,7 @@ void meniu() {
 	printf("[1] - Uzduotis nr 1\n");
 	printf("[2] - Uzduotis nr 2\n");
 	printf("[3] - Uzduotis nr 3\n");
+	printf("[4] - Uzduotis nr 4\n");
 	printf("[0] - Baigti darba\n");
 	scanf("%d", &i);
 
@@ -79,6 +84,10 @@ void meniu() {
         case 3:
             system("cls");
 			Uzduotis_3();
+			break;
+        case 4:
+			system("cls");
+			Uzduotis_4();
 			break;
 		default:
 			meniu();
@@ -210,7 +219,13 @@ void Uzduotis_3() {
                 for (i=0; i<kiekis; i++) {
                     printf("Reiksme: ");
                     scanf("%d", &reiksme);
-                    iterpti(&saknis, reiksme);
+					if(paieska(saknis, reiksme))
+					{
+						i--;
+						printf("Elemento iterpti negalima. Jis jau egzistuoja.\n");
+					} else {
+						iterpti(&saknis, reiksme);
+					}
                 }
                 printf("\n");
                 break;
@@ -253,6 +268,22 @@ void Uzduotis_3() {
     }
     system("pause");
 	meniu();
+}
+
+void Uzduotis_4() {
+    char simbolis[20];
+    sarasasPtr = NULL;
+
+    printf("UZDUOTIS 4\n\n");
+    printf("Duotas vienkryptis sarasas. Suskaiciuoti kiek jame yra skirtingu mazuju raidziu\n");
+    printf("Iveskite simbolius (teksta)\n");
+    printf("Ivedimo pabaiga ctr+z \n");
+    printf("?");
+    scanf("%s", simbolis);
+    while(!feof(stdin)) {
+        IterptiSarasa(simbolis);
+        SpausdintiSarasa();
+    }
 }
 
 void iterpti(MedisPtr *MusuMedis, int elem) {
@@ -325,46 +356,6 @@ MedisPtr salinti(Medis *MusuMedis, int elem) {
     }
     return MusuMedis;
 }
-/*
-void insertNode(NodePtr *naujas, int value) {
-    if (*naujas == NULL) {
-        *naujas = (NodePtr)malloc(sizeof(Node));
-        (*naujas)->data = value;
-        (*naujas)->next = (*naujas)->prev = *naujas;
-        return;
-    } else if((*naujas)->next == (*naujas)->prev) {
-        NodePtr temp = (NodePtr)malloc(sizeof(Node));
-        temp->data = value;
-        temp->next = *naujas;
-        temp->prev = *naujas;
-        (*naujas)->next = temp;
-        (*naujas)->prev = temp;
-    } else {
-        NodePtr temp = (NodePtr)malloc(sizeof(Node));
-        temp->data = value;
-        temp->prev = *naujas;
-        temp->next = (*naujas)->next;
-        (*naujas)->next->prev = temp;
-        (*naujas)->next = temp;
-    }
-}
-
-void insert_at_tail(int value) {
-    node *newNode = (node*)malloc(sizeof(node));
-    newNode->data = value;
-    newNode->next = newNode;
-    newNode->prev = newNode;
-    if (head == NULL) {
-        head = newNode;
-        tail = newNode;
-    } else {
-        tail->next = newNode;
-        newNode->next = head;
-        newNode->prev = tail;
-        tail =newNode;
-        head->prev = tail;
-    }
-}*/
 
 void InsertAtTail(int x) {
     struct Node* newNode = GetNewNode(x);
@@ -390,11 +381,38 @@ void PrintNode() {
         printf("%d ", temp->data);
         temp = temp->next;
     } while(temp != head);
+	printf("\n");
 }
 
 void MedisToNode(MedisPtr MusuMedis) {
-    MedisToNode(MusuMedis->kaire);
-    InsertAtTail(MusuMedis->elementas);
-    MedisToNode(MusuMedis->desine);
+    if(MusuMedis != NULL) {
+		InsertAtTail(MusuMedis->elementas);
+		MedisToNode(MusuMedis->kaire);
+		MedisToNode(MusuMedis->desine);
+	}
 }
 
+void IterptiSarasa(char* value) {
+    struct sarasas* temp = (struct sarasas*)malloc(sizeof(struct sarasas));
+    temp->data = *value;
+    temp->next = NULL;
+    if(sarasasPtr == NULL){
+        sarasasPtr = temp;
+    } else {
+        struct sarasas* temp1 = (struct sarasas*)malloc(sizeof(struct sarasas));
+        temp1 = sarasasPtr;
+        while(temp1->next != NULL) {
+            temp1 = temp1->next;
+        }
+        temp1 = temp;
+    }
+}
+
+void SpausdintiSarasa() {
+    struct sarasas* temp = sarasasPtr;
+    printf("Musu sarasas\n");
+    while(temp != NULL) {
+        printf("%c", temp->data);
+        temp = temp->next;
+    }
+}
