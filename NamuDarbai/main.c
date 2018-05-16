@@ -47,7 +47,7 @@ MedisPtr salinti(Medis *, int);
 void MedisToNode (MedisPtr);
 void InsertAtTail(int);
 void PrintNode();
-//4 Uzduotis
+
 void IterptiSarasa(char*);
 void SpausdintiSarasa();
 
@@ -257,7 +257,8 @@ void Uzduotis_3() {
                 if(saknis == NULL)
                     printf("Medis yra tuscias!\n\n");
                 else {
-                    MedisToNode(saknis);
+                    printf("Dvykryptis ciklinis sarasas: \n");
+					MedisToNode(saknis);;
                     PrintNode();
                }
                 break;
@@ -275,17 +276,18 @@ void Uzduotis_4() {
     sarasasPtr = NULL;
 
     printf("UZDUOTIS 4\n\n");
-    printf("Duotas vienkryptis sarasas. Suskaiciuoti kiek jame yra skirtingu mazuju raidziu\n");
+    printf("Duotas vienkryptis sarasas. Suskaiciuoti kiek jame yra skirtingu mazuju raidziu\n\n");
     printf("Iveskite simbolius (teksta)\n");
     printf("Ivedimo pabaiga ctr+z \n");
     printf("?");
     scanf("%s", simbolis);
     while(!feof(stdin)) {
         IterptiSarasa(simbolis);
-		SpausdintiSarasa();
+
 		printf("?");
 		scanf("%s", simbolis);
     }
+    SpausdintiSarasa();
 }
 
 void iterpti(MedisPtr *MusuMedis, int elem) {
@@ -298,8 +300,6 @@ void iterpti(MedisPtr *MusuMedis, int elem) {
         iterpti(&((*MusuMedis)->kaire), elem);
     } else if (elem > (*MusuMedis)->elementas) {
         iterpti(&((*MusuMedis)->desine), elem);
-    } else {
-        printf("Elemento iterpti negalima. Jis jau egzistuoja.\n");
     }
 }
 
@@ -383,7 +383,7 @@ void PrintNode() {
         printf("%d ", temp->data);
         temp = temp->next;
     } while(temp != head);
-	printf("\n");
+	printf("\n\n");
 }
 
 void MedisToNode(MedisPtr MusuMedis) {
@@ -402,13 +402,30 @@ void IterptiSarasa(char* value) {
 }
 
 void SpausdintiSarasa() {
-    int mazosraides = 0;
+    int i;
+    MedisPtr saknis = NULL;
 	struct sarasas* temp = sarasasPtr;
-    printf("Musu sarasas\n");
+    printf("\nMusu sarasas\n");
     while(temp != NULL) {
+        i = temp->data;
+		if(i >96 && i < 123) {
+			iterpti(&saknis, i);
+		}
         printf("%c ", temp->data);
 		temp = temp->next;
     }
-	printf("\n");
-	printf("Skirtingu mazuju raidziu yra: %d ", mazosraides);
+	printf("\n\n");
+	printf("Yra: %d skirtingos mazos raides\n", MazosRaides(saknis));
+	system("pause");
+	meniu();
+}
+
+int MazosRaides(MedisPtr MusuMedis) {
+    int c =  1;             
+    if (MusuMedis ==NULL)
+        return 0;
+    else
+    {
+        return 1 + MazosRaides(MusuMedis->kaire) + MazosRaides(MusuMedis->desine);
+    }
 }
